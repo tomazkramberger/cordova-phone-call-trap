@@ -10,7 +10,6 @@ import android.telephony.TelephonyManager;
 import org.json.JSONException;
 import org.json.JSONArray;
 
-
 public class PhoneCallTrap extends CordovaPlugin {
 
     CallStateListener listener;
@@ -26,7 +25,8 @@ public class PhoneCallTrap extends CordovaPlugin {
     private void prepareListener() {
         if (listener == null) {
             listener = new CallStateListener();
-            TelephonyManager TelephonyMgr = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager TelephonyMgr = (TelephonyManager) cordova.getActivity()
+                    .getSystemService(Context.TELEPHONY_SERVICE);
             TelephonyMgr.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
         }
     }
@@ -43,21 +43,22 @@ class CallStateListener extends PhoneStateListener {
     public void onCallStateChanged(int state, String incomingNumber) {
         super.onCallStateChanged(state, incomingNumber);
 
-        if (callbackContext == null) return;
+        if (callbackContext == null)
+            return;
 
         String msg = "";
 
         switch (state) {
-            case TelephonyManager.CALL_STATE_IDLE:
-            msg = "IDLE";
+        case TelephonyManager.CALL_STATE_IDLE:
+            msg = "{\"state\": \"IDLE\", \"phoneNumber\": \"" + incomingNumber + "\"}";
             break;
 
-            case TelephonyManager.CALL_STATE_OFFHOOK:
-            msg = "OFFHOOK";
+        case TelephonyManager.CALL_STATE_OFFHOOK:
+            msg = "{\"state\": \"OFFHOOK\", \"phoneNumber\": \"" + incomingNumber + "\"}";
             break;
 
-            case TelephonyManager.CALL_STATE_RINGING:
-            msg = "RINGING";
+        case TelephonyManager.CALL_STATE_RINGING:
+            msg = "{\"state\": \"RINGING\", \"phoneNumber\": \"" + incomingNumber + "\"}";
             break;
         }
 
@@ -67,3 +68,4 @@ class CallStateListener extends PhoneStateListener {
         callbackContext.sendPluginResult(result);
     }
 }
+
